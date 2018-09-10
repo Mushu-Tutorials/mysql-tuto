@@ -1,6 +1,10 @@
 # Tutoriel MySQL
 
-## Find general commands SQL
+## Liens utiles
+
+- [Docker MySQL](https://hub.docker.com/_/mysql/ "Docker MySQL")
+
+## Commandes générales pour MySQL
 
 - Pour se connecter à une base de données : `mysql -h ip_address -P 3306 -u login_bdd -p  database_name`
 - Créer une base de données : `CREATE DATABASE database_name;`
