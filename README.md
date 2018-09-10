@@ -1,9 +1,5 @@
 # Tutoriel MySQL
 
-## Liens utiles
-
-- [Docker MySQL](https://hub.docker.com/_/mysql/ "Docker MySQL")
-
 ## Commandes générales pour MySQL
 
 - Pour se connecter à une base de données : `mysql -h ip_address -P 3306 -u login_bdd -p  database_name`
@@ -55,4 +51,31 @@ mysql -u login_bdd -p -h localhost database_name < database_backup.sql          
 mysql -u login_bdd -p -h 202.54.1.10 database_name < database_backup.sql            # (2)
 mysql -u login_bdd -p -h mysql.mabase.org database_name < database_backup.sql       # (3)
 mysql -u login_bdd -p -h 202.54.1.10 < database_backup.sql                          # (4)
+```
+
+## Docker MySQL
+
+- [DockerHub MySQL](https://hub.docker.com/_/mysql/ "DockerHub MySQL")
+
+Télécharger l'image du container MySQL :
+```shell
+docker pull mysql latest
+```
+
+Lancer l'image du container avec les paramètres souhaités :
+- `--name some-mysql` : nom du container MySQL souhaité (test-mysql)
+- `-e MYSQL_ROOT_PASSWORD=my-secret-pw` : mot de passe souhaité (Admin1234)
+- `-d mysql:tag` : version de MySQL utilisé
+```shell
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+```
+
+Récupérer l'adresse IP du container :
+```shell
+docker inspect some-mysql
+```
+
+Se connecter à la base MySQL :
+```shell
+docker exec -it some-mysql mysql -u root -p
 ```
