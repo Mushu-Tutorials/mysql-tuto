@@ -53,13 +53,15 @@ mysql -u login_bdd -p -h mysql.mabase.org database_name < database_backup.sql   
 mysql -u login_bdd -p -h 202.54.1.10 < database_backup.sql                          # (4)
 ```
 
-## Docker MySQL
+## Docker MySQL + PHPMyAdmin
+
+### Docker MySQL
 
 - [DockerHub MySQL](https://hub.docker.com/_/mysql/ "DockerHub MySQL")
 
 Télécharger l'image du container MySQL :
 ```shell
-docker pull mysql latest
+docker pull mysql
 ```
 
 Lancer l'image du container avec les paramètres souhaités :
@@ -78,4 +80,13 @@ docker inspect some-mysql
 Se connecter à la base MySQL :
 ```shell
 docker exec -it some-mysql mysql -u root -p
+```
+
+### Docker phpMyAdmin
+
+- [DockerHub phpMyAdmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/ "DockerHub phpMyAdmin")
+
+Télécharger l'image du container phpMyAdmin :
+```shell
+docker pull phpmyadmin/phpmyadmin
 ```
