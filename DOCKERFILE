@@ -1,6 +1,19 @@
-FROM mysql:latest
+FROM debian
 
-WORKDIR /mysql
-COPY . /mysql
+# RUN dpkg-divert --local --rename --add /sbin/initctl
+# RUN ln -s /bin/true /sbin/initctl
 
+# RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get -y install mysql-server
 
+# ROOT PASSWORD
+ENV MYSQL_ROOT_PASSWORD=azerty
+
+# ENV MYSQL_DATABASE=mysqltest
+ENV MYSQL_USER=bob
+ENV MYSQL_PASSWORD=pwd
+
+EXPOSE 3306
+
+CMD ["/usr/bin/mysqld_safe"]
