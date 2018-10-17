@@ -1,1 +1,6 @@
-FROM debian
+FROM mysql:latest
+
+WORKDIR /mysql
+COPY . /mysql
+
+

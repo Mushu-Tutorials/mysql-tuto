@@ -1,5 +1,7 @@
 # Tutoriel MySQL
 
+Login/Mdp (MySQL) : root/azerty
+
 ## Commandes générales pour MySQL
 
 - Pour se connecter à une base de données : `mysql -h ip_address -P 3306 -u login_bdd -p  database_name`
@@ -61,18 +63,32 @@ Tutoriel pour Docker [ici](https://github.com/MushuLeDragon/docker-tuto "Tuto Do
 
 - [DockerHub MySQL](https://hub.docker.com/_/mysql/ "DockerHub MySQL")
 
-Télécharger l'image du container MySQL :
+Télécharger l'image du container MySQL (`mysql/mysql-server:tag` pour spécifier une version) :
 ```shell
-docker pull mysql
+docker pull mysql/mysql-server
 ```
 
 Lancer l'image du container avec les paramètres souhaités :
-- `--name some-mysql` : nom du container MySQL souhaité (test-mysql)
-- `-e MYSQL_ROOT_PASSWORD=my-secret-pw` : mot de passe souhaité (Admin1234)
-- `-d mysql:tag` : version de MySQL utilisé
 ```shell
 docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
 ```
+- `--name some-mysql` : nom du container MySQL souhaité (test-mysql)
+- `-e MYSQL_ROOT_PASSWORD=my-secret-pw` : mot de passe souhaité (Admin1234)
+- `-d` : permet d'exécuter le container en arrière plan
+- `mysql:tag` : version de MySQL utilisé, `:latest` ou vide pour la dernière version
+
+Lancer l'image étape par étape :
+- `docker pull mysql/mysql-server`
+- `docker run --name some-mysql -d mysql/mysql-server`
+- Pour se connecter en BASH/SHELL :
+  - `docker logs mysql1 2>&1 | grep GENERATED` génèrera le mot de passe ROOT de MySQL (exemple : `GENERATED ROOT PASSWORD: Axegh3kAJyDLaRuBemecis&EShOs`)
+  - `docker exec -it some-mysql bash` pour se connecter en bash
+    - `bash-4.2# mysql -u root -p`
+    - Taper le mot de passe, dans notre cas : `Axegh3kAJyDLaRuBemecis&EShOs`
+    - `mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';` Changer le mot de passe
+- Pour se connecter à MySQL :
+  - `docker exec -it some-mysql mysql -u root -p` pour se connecter à MySQL
+  - `mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';` Changer le mot de passe
 
 Récupérer l'adresse IP du container :
 ```shell
