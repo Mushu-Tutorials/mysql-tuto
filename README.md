@@ -20,7 +20,7 @@ Login/Mdp (MySQL) : root/azerty
 
 ```sql
 CREATE USER 'login_bdd'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON *.* TO 'Nom-Administrateur'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'login_bdd'@'%' WITH GRANT OPTION;
 ```
 
 ### Exporter / Importer une base de données
@@ -79,7 +79,8 @@ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
 
 Lancer l'image étape par étape :
 - `docker pull mysql/mysql-server`
-- `docker run --name some-mysql -d mysql/mysql-server`
+- `docker run -it --name some-mysql -d -p 3000:3306 mysql/mysql-server`
+  - L'attribut `-p 3000:3306` permet de définir les ports. Le __port 3000__ est le port d'entrée qui redirige vers le __port 3306__.
 - Pour se connecter en BASH/SHELL :
   - `docker logs mysql1 2>&1 | grep GENERATED` génèrera le mot de passe ROOT de MySQL (exemple : `GENERATED ROOT PASSWORD: Axegh3kAJyDLaRuBemecis&EShOs`)
   - `docker exec -it some-mysql bash` pour se connecter en bash
@@ -98,6 +99,55 @@ docker inspect some-mysql
 Se connecter à la base MySQL :
 ```shell
 docker exec -it some-mysql mysql -u root -p
+```
+
+#### Utilisation d'un fichier .env
+
+L'utilisation d'un fichier .env permet de passer les paramètres en __variables d'environnement__ et ainsi cacher les paramètres sensibles.
+Créer le fichier `touch .env` et l'éditer avec __vim__ ou __nano__ `vim .env`
+
+```shell
+MYSQL_ROOT_PASSWORD=my_root_password
+MYSQL_DATABASE=database
+MYSQL_USER=dbuser
+MYSQL_PASSWORD=dbpassword
+```
+
+Commande pour lancer le container avec un fichier .env :
+```shell
+docker run \
+    --env-file .env \
+    --mount type=volume,src=crv_mysql,dst=/var/lib/mysql \
+    -p 3306:3306 \
+    -d \
+    mysql:latest
+```
+
+#### DOCKERFILE MySQL
+
+Le DOCKERFILE permet de mettre en place  le container. Il prend en compte les paramètres à installer.  
+Ne pas oublier d'ouvrir et configurer le serveur pour qu'on puisse se connecter à la base depuis l'extérieur. Le fichier `50-server.cnf` et l'ajout de la ligne `bind-address            = 0.0.0.0` permet cette configuration
+
+```dockerfile
+FROM debian
+WORKDIR /mysql
+COPY . /mysql
+
+RUN apt-get update
+RUN apt-get -y install \
+    mysql-server
+
+# Définition des variables d'environnent Root et User
+ENV MYSQL_ROOT_PASSWORD=azerty
+ENV MYSQL_USER=bob
+ENV MYSQL_PASSWORD=pwd
+
+# Copie le ficher dans le container. Ce fichier permet une connexion externet
+# Modification de la ligne 'bind-address = 0.0.0.0' > 'bind-address = 127.0.0.1'
+COPY ./50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+
+EXPOSE 3306
+CMD ["/usr/bin/mysqld_safe"]
 ```
 
 ### Docker phpMyAdmin

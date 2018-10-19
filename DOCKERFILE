@@ -1,11 +1,18 @@
 FROM debian
 
+WORKDIR /mysql
+
+COPY . /mysql
+COPY ./test.sql /docker-entrypoint-initdb.d/
+# COPY init.sql /docker-entrypoint-initdb.d/
+
 # RUN dpkg-divert --local --rename --add /sbin/initctl
 # RUN ln -s /bin/true /sbin/initctl
 
 # RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get -y install mysql-server
+RUN apt-get -y install \
+    mysql-server
 
 # ROOT PASSWORD
 ENV MYSQL_ROOT_PASSWORD=azerty
@@ -14,6 +21,21 @@ ENV MYSQL_ROOT_PASSWORD=azerty
 ENV MYSQL_USER=bob
 ENV MYSQL_PASSWORD=pwd
 
+# RUN /etc/init.d/mysql start && \
+    # mysql --execute"CREATE USER 'test'@'%' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'%' WITH GRANT OPTION;"
+
+# Définition des roles utilisateurs
+# RUN mysql --execute="SELECT host, user FROM mysql.user;" >> /mysql/test.txt
+# RUN mysql -u root -e "CREATE USER 'testt'@'192.168.0.66' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'testt'@'192.168.0.66' WITH GRANT OPTION;"
+
+COPY ./50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 EXPOSE 3306
 
 CMD ["/usr/bin/mysqld_safe"]
+
+# docker run -it --name azerty -p 3002:3306 --privileged -d mysql-test
+# mysql mysql --execute="SELECT * FROM cabinet;" >> test.txt
+# mysql mysql-test --execute="SELECT * FROM cabinet;" >> test.txt
+# mysql --user="root" --password="azerty" --database="mysqltest" --execute="SELECT * FROM cabinet;" >> test.txt
+# mysql --execute"CREATE USER 'test'@'%' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'%' WITH GRANT OPTION;"
+# CREATE USER 'test'@'%' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'%' WITH GRANT OPTION;
