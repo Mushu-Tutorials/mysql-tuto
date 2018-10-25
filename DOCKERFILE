@@ -21,6 +21,10 @@ ENV MYSQL_ROOT_PASSWORD=azerty
 ENV MYSQL_USER=bob
 ENV MYSQL_PASSWORD=pwd
 
+# Copie du ficjier de config afin d'ouvrir les connexions à la base de données
+# COPY ./50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+# Modification de bind-address=127.0.0.1 > bind-address=0.0.0.0 dans le fichier /etc/mysql/my.cnf
+RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf
 # RUN /etc/init.d/mysql start && \
     # mysql --execute"CREATE USER 'test'@'%' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'%' WITH GRANT OPTION;"
 
@@ -28,9 +32,7 @@ ENV MYSQL_PASSWORD=pwd
 # RUN mysql --execute="SELECT host, user FROM mysql.user;" >> /mysql/test.txt
 # RUN mysql -u root -e "CREATE USER 'testt'@'192.168.0.66' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'testt'@'192.168.0.66' WITH GRANT OPTION;"
 
-COPY ./50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 EXPOSE 3306
-
 CMD ["/usr/bin/mysqld_safe"]
 
 # docker run -it --name azerty -p 3002:3306 --privileged -d mysql-test

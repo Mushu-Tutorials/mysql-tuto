@@ -152,9 +152,26 @@ CMD ["/usr/bin/mysqld_safe"]
 
 ### Docker phpMyAdmin
 
+Après avoir mis en place le container __MySQL__ (ici on l'appelera mon_container_mysql), on peut maintenant mettre en place celui de __phpMyAdmin__.
 - [DockerHub phpMyAdmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/ "DockerHub phpMyAdmin")
 
-Télécharger l'image du container phpMyAdmin :
+Télécharger l'image du container phpMyAdmin puis le lancer :
 ```shell
 docker pull phpmyadmin/phpmyadmin
+# Le port 8080 est le port local auquel on accède, qui renvoi vers celui du container le port 80
+docker run --name myadmin -d --link mon_container_mysql:db -p 8080:80 phpmyadmin/phpmyadmin
+```
+
+Un fois lancé on peut maintenant accéder à la page de phpMyAdmin via l'URL `http://localhost:8080`
+
+# Commandes pour créer et lancer le container
+
+```shell
+docker build -t mysql-test .
+docker run -it -d --rm -p 3000:3306 --name azerty mysql-test
+docker exec -it azerty bash
+
+CREATE USER 'test'@'%' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'%' WITH GRANT OPTION;
+
+docker exec -it azerty mysql -u root -p
 ```
