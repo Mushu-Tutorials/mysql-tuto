@@ -9,6 +9,8 @@ Login/Mdp (MySQL) : root/azerty
 - Voir les bases de données : `SHOW databases;`
 - Se connecter à la base de donnée souhaitée : `USE database_name`
 - Voir l'ensemble des tables de la base de données : `SHOW tables;`
+- Commande __BASH__ MySQL : `mysql --execute"CREATE USER 'test'@'%' IDENTIFIED BY 'pwd'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'%' WITH GRANT OPTION;"`
+- Commande __BASH__ MySQL : `mysql --execute"SELECT host, user FROM mysql.user;"`
 
 ### Gestion des utilisateurs
 
